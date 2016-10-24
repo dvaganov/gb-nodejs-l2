@@ -1,6 +1,4 @@
-var fs = require('fs');
+var blackjack = require('./blackjack.js');
+var gameTable = require('./gametable.js');
 
-fs.writeFile('some.ks', 'text', function(err) {
-    console.log(err);
-});
-
+blackjack.setGameTable(gameTable).run();

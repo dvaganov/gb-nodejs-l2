@@ -1,0 +1,23 @@
+{
+  "name": "gb-nodejs-l2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "async": "^2.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dvaganov/gb-nodejs-l2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dvaganov/gb-nodejs-l2/issues"
+  },
+  "homepage": "https://github.com/dvaganov/gb-nodejs-l2#readme"
+}
