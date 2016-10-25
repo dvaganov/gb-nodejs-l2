@@ -1,4 +1,8 @@
 var blackjack = require('./blackjack.js');
 var gameTable = require('./gametable.js');
 
-blackjack.setGameTable(gameTable).run();
+var logFile = process.argv[2];
+
+blackjack
+    .setGameTable(gameTable)
+    .run(logFile);

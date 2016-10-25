@@ -1,11 +1,16 @@
 function GameTable() {
-    var inProcess = false;
     var cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 
     var dealer = [];
     var player = [];
 
-    var that = this;
+    this.STATUS_NONE = 0;
+    this.STATUS_GAME_OVER = 1;
+    this.STATUS_DEALER_WIN = 2;
+    this.STATUS_PLAYER_WIN = 3;
+    this.STATUS_DRAW = 4;
+    this.STATUS_PLAYER_BLACK_JACK = 5;
+    this.STATUS_DEALER_BLACK_JACK = 6;
 
     var getCard = function() {
         var min = 0, max = cards.length - 1;
@@ -13,8 +18,9 @@ function GameTable() {
         return cards[randNum];
     };
 
-    this.getCardSum = function(cardSet) {
+    var getCardSum = function(cardSet) {
         var result = 0;
+        var amountA = 0;
 
         for (var i = 0; i < cardSet.length; i++) {
             switch(cardSet[i]) {
@@ -24,6 +30,7 @@ function GameTable() {
                     result += 10;
                     break;
                 case 'A':
+                    amountA++;
                     break;
                 default:
                     result += parseInt(cardSet[i], 10);
@@ -31,10 +38,17 @@ function GameTable() {
             }
         }
 
+        for (var i = 0; i < amountA; i++) {
+            if (result <= 10)
+                result += 11;
+            else
+                result++;
+        }
+
         return result;
     }
 
-    this.startRound = function() {
+    this.start = function() {
         dealer = [];
         player = [];
 
@@ -44,18 +58,56 @@ function GameTable() {
         return this;
     };
 
-    this.getStatus = function() {
-        var status = '\nДилер: ' + dealer.join(' ') + ' (' + this.getCardSum(dealer) + ')'
-            + '\nИгрок: ' + player.join(' ') + ' (' + this.getCardSum(player) + ')\n';
-        return status;
+    this.getInfo = function() {
+        var result = {
+            dealer: {
+                cardSet: dealer.join(' '),
+                cardSum: getCardSum(dealer)
+            },
+            player: {
+                cardSet: player.join(' '),
+                cardSum: getCardSum(player)
+            }
+        };
+
+        return result;
     };
 
-    this.continueRound = function() {
+    this.continue = function() {
         player.push(getCard());
+        return this;
     };
 
-    this.endRound = function() {
-        return 'End round';
+    this.end = function() {
+        while (getCardSum(dealer) <= 17) {
+            dealer.push(getCard());
+        }
+        return this;
+    };
+
+    this.getStatus = function() {
+        var result = this.STATUS_NONE;
+
+        var playerCardSum = getCardSum(player);
+        var dealerCardSum = getCardSum(dealer);
+
+        if (playerCardSum === 21) {
+            result = this.STATUS_PLAYER_BLACK_JACK;
+        } else if (playerCardSum > 21) {
+            result = this.STATUS_DEALER_WIN;
+        } else {
+            if (dealerCardSum === 21) {
+                result = this.STATUS_DEALER_BLACK_JACK;
+            } else if (dealerCardSum > 21) {
+                result = this.STATUS_PLAYER_WIN;
+            } else if (dealerCardSum > playerCardSum) {
+                result = this.STATUS_DEALER_WIN;
+            } else if (playerCardSum === dealerCardSum) {
+                result = this.STATUS_DRAW;
+            }
+        }
+
+        return result;
     };
 
 }
