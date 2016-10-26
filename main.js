@@ -5,4 +5,5 @@ var logFile = process.argv[2];
 
 blackjack
     .setGameTable(gameTable)
-    .run(logFile);
+    .withLog(logFile)
+    .run();

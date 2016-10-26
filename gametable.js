@@ -8,9 +8,8 @@ function GameTable() {
     this.STATUS_GAME_OVER = 1;
     this.STATUS_DEALER_WIN = 2;
     this.STATUS_PLAYER_WIN = 3;
-    this.STATUS_DRAW = 4;
-    this.STATUS_PLAYER_BLACK_JACK = 5;
-    this.STATUS_DEALER_BLACK_JACK = 6;
+    this.STATUS_PLAYER_BLACK_JACK = 4;
+    this.STATUS_DEALER_BLACK_JACK = 5;
 
     var getCard = function() {
         var min = 0, max = cards.length - 1;
@@ -38,6 +37,7 @@ function GameTable() {
             }
         }
 
+        // It's unique rules for ace
         for (var i = 0; i < amountA; i++) {
             if (result <= 10)
                 result += 11;
@@ -85,6 +85,7 @@ function GameTable() {
         return this;
     };
 
+    // Main game rules
     this.getStatus = function() {
         var result = this.STATUS_NONE;
 
@@ -102,8 +103,6 @@ function GameTable() {
                 result = this.STATUS_PLAYER_WIN;
             } else if (dealerCardSum > playerCardSum) {
                 result = this.STATUS_DEALER_WIN;
-            } else if (playerCardSum === dealerCardSum) {
-                result = this.STATUS_DRAW;
             }
         }
 

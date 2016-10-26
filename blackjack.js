@@ -1,20 +1,27 @@
 var readline = require('readline');
 var fs = require('fs');
 
+// Setup readline interface
 var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
 
+// BlackJack game class.
 function BlackJack() {
     var _inGame = false;
     var _gameTable = null;
     var _logFile;
 
-    this.run = function(logFile) {
-        _logFile = logFile;
+    this.run = function() {
         rl.write('+++Добро пожаловать в игру BlackJack!+++\n');
         _startNewGame();
+        return this;
+    };
+
+    this.withLog = function(logFile) {
+        _logFile = logFile;
+        return this;
     };
 
     this.setGameTable = function(gameTable) {
@@ -24,6 +31,8 @@ function BlackJack() {
 
     var _startNewGame = function() {
         rl.write('\n');
+
+        // Default yes. If no - end program.
         rl.question('Раздаём карты? [Д/н] ', function(answer) {
             if (answer.toLowerCase() === 'н' || answer.toLowerCase() === 'n') {
                 rl.close();
@@ -44,11 +53,14 @@ function BlackJack() {
         rl.write('Игрок: ' + info.player.cardSet + ' (' + info.player.cardSum + ')\n');
         rl.write('=====\n');
 
+        // Show result if game is end or player has blackjack or he bust while in game
         if (!_inGame || (_inGame && status !== _gameTable.STATUS_NONE)) {
             _endGame(status);
+            _inGame = false;
         }
 
         if (_inGame) {
+            // Default is No.
             rl.question('Ещё одну? [д/Н] ', function(answer) {
                 if (answer.toLowerCase() === 'y' || answer.toLowerCase() === 'д') {
                     _gameTable.continue();
@@ -56,6 +68,7 @@ function BlackJack() {
                     _inGame = false;
                     _gameTable.end();
                 }
+                // Recursive call instead of loop with sync functions
                 _nextTurn();
             });
         }
@@ -83,7 +96,7 @@ function BlackJack() {
                 result = 'Ухх! У дилера BlackJack. Увы.';
                 log = 'l';
                 break;
-            case _gameTable.STATUS_DRAW:
+            case _gameTable.STATUS_NONE:
                 result = 'На этот раз все остались при своём.';
                 log = 'd';
                 break;
@@ -91,13 +104,13 @@ function BlackJack() {
 
         rl.write(result + '\n');
 
-        if (typeof _logFile !== 'undefined')
+        if (_logFile)
             fs.appendFile(_logFile, log, function(err) {
                 if (err)
                     throw err;
             });
 
-        _inGame = false;
+        // Ask user for new game.
         _startNewGame();
     };
 }
