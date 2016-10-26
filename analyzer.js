@@ -58,10 +58,12 @@ function getStat(data) {
             case 'w':
                 result.wins++;
                 winsIAR++;
+                loosesIAR = 0;
                 break;
             case 'l':
                 result.looses++;
                 loosesIAR++;
+                winsIAR = 0;
                 break;
             case 'd':
                 result.draw++;
@@ -70,12 +72,10 @@ function getStat(data) {
 
         if (winsIAR > result.winsIAR) {
             result.winsIAR = winsIAR;
-            winsIAR = 0;
         }
 
         if (loosesIAR > result.loosesIAR) {
             result.loosesIAR = loosesIAR;
-            loosesIAR = 0;
         }
 
     }
